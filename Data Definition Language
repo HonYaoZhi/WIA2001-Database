@@ -25,7 +25,7 @@ PRIMARY KEY(Bvg_ID)
 CREATE TABLE Supplier (
 Supplier_ID VARCHAR(4) NOT NULL,
 Supplier_Name VARCHAR(50) NOT NULL,
-Supplier_Contact INTEGER NOT NULL,
+Supplier_Contact VARCHAR(15) NOT NULL,
 Supplier_Email VARCHAR(30) NOT NULL,
 Supplier_Address VARCHAR(320) NOT NULL,
 PRIMARY KEY(Supplier_ID)
@@ -41,7 +41,9 @@ Employee_Gender CHAR(6) NOT NULL,
 Employee_Hire_Date DATE NOT NULL,
 Employee_Position_ID VARCHAR(4) NOT NULL,
 Employee_Working_Hours INTEGER NOT NULL,
-PRIMARY KEY(Employee_ID)
+PRIMARY KEY(Employee_ID),
+CONSTRAINT FK_Employee FOREIGN KEY(Employee_Position_ID) 
+REFERENCES Employee_Position(Employee_Position_ID)
 );
 
 CREATE TABLE Employee_Attendance (
@@ -78,7 +80,8 @@ Payment_Method_Name VARCHAR(20) NOT NULL,
 Payment_Amount NUMBER NOT NULL,
 PRIMARY KEY(Order_ID),
 CONSTRAINT FK_Order_Employee_ID FOREIGN KEY(Employee_ID) REFERENCES Employee(Employee_ID),
-CONSTRAINT FK_Order_Customer_ID FOREIGN KEY(Customer_ID) REFERENCES Customer(Customer_ID)
+CONSTRAINT FK_Order_Customer_ID FOREIGN KEY(Customer_ID) REFERENCES Customer(Customer_ID),
+CONSTRAINT FK_Order_Delivery_ID FOREIGN KEY(Delivery_ID) REFERENCES Food_Delivery(Delivery_ID)
 );
 
 CREATE TABLE Ingredient (
