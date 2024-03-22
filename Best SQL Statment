@@ -1,0 +1,70 @@
+--BEST SQL STATEMENT--
+
+--First--
+SELECT
+    Beverage.Bvg_ID,
+    Beverage.Bvg_Name,
+    SUM(Includes.Bvg_Quantity) AS TotalQuantitySold
+FROM
+    Orders
+JOIN
+    Includes ON Orders.Order_ID = Includes.Order_ID
+JOIN
+    Beverage ON Includes.Bvg_ID = Beverage.Bvg_ID
+WHERE
+    EXTRACT(MONTH FROM Orders.Order_Date_Time) = 11 -- Replace with your desired month
+    AND EXTRACT(YEAR FROM Orders.Order_Date_Time) = 2023 -- Replace with your desired year
+GROUP BY
+    Beverage.Bvg_ID, Beverage.Bvg_Name
+ORDER BY
+    TotalQuantitySold DESC;
+
+
+--Second--
+SELECT
+    I2.Ingredient_ID,
+    I2.Ingredient_Name,
+    I2.Unit_Cost,
+    S.Supplier_ID,
+    S.Supplier_Name,
+    S.Supplier_Contact,
+    S.Supplier_Email,
+    SUM(I.Ingredient_Quantity) AS TotalStockQuantity
+FROM
+    inventory I
+JOIN
+    ingredient I2 ON I.Ingredient_ID = I2.Ingredient_ID
+JOIN
+    supplier S ON I2.Supplier_ID = S.Supplier_ID
+LEFT JOIN
+    made M ON I.Ingredient_ID = M.Ingredient_ID
+GROUP BY
+    I2.Ingredient_ID, I2.Ingredient_Name, I2.Unit_Cost, S.Supplier_ID, S.Supplier_Name, S.Supplier_Contact, S.Supplier_Email
+ORDER BY
+    I2.Ingredient_ID ASC;
+
+
+--Third--
+SELECT
+    c.Customer_ID, c.Customer_Name, c.Customer_Contact, c.Customer_Email, 
+    COUNT(o.Order_ID) AS OrderCount
+FROM 
+    customer c
+LEFT JOIN 
+    orders o ON c.Customer_ID = o.Customer_ID
+GROUP BY 
+    c.Customer_ID, c.Customer_Name, c.Customer_Contact, c.Customer_Email;
+
+
+--Fourth--
+SELECT
+    b.Bvg_Type,
+    SUM(o.Payment_Amount) AS TotalSales
+FROM
+    Orders o
+JOIN
+    Includes i ON o.Order_ID = i.Order_ID
+JOIN
+    Beverage b ON i.Bvg_ID = b.Bvg_ID
+GROUP BY
+    b.Bvg_Type;
