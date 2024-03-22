@@ -118,3 +118,13 @@ PRIMARY KEY(Order_ID, Bvg_ID),
 CONSTRAINT FK_Include_Order_ID FOREIGN KEY(Order_ID) REFERENCES Orders(Order_ID),
 CONSTRAINT FK_Include_Bvg_ID FOREIGN KEY(Bvg_ID) REFERENCES Beverage(Bvg_ID)
 );
+
+CREATE TABLE Food_Delivery (
+Delivery_ID VARCHAR(10) NOT NULL,
+Delivery_Date_Time TIMESTAMP NOT NULL,
+Delivery_Status VARCHAR(10) NOT NULL,
+Platform_Name VARCHAR(20) NOT NULL,
+PRIMARY KEY(Delivery_ID),
+CONSTRAINT check_Delivery_Status CHECK (Delivery_Status IN ('Delivered', 'Cancelled', 'Refunded')),
+CONSTRAINT check_platform_name CHECK (Platform_Name IN ('Grabfood', 'Shopeefood', 'Foodpanda'))
+);
