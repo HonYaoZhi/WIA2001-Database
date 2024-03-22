@@ -1,0 +1,120 @@
+--DATA DEFINITION LANGUAGE--
+CREATE TABLE Customer (
+Customer_ID INTEGER NOT NULL,
+Customer_Name VARCHAR(50) NOT NULL,
+Customer_Contact VARCHAR(15) NOT NULL,
+Customer_Email VARCHAR(30) NOT NULL,
+PRIMARY KEY(Customer_ID)
+);
+
+CREATE TABLE Employee_Position (
+Employee_Position_ID VARCHAR(4) NOT NULL,
+Employee_Position_Name VARCHAR(50) NOT NULL,
+Employee_Pay_Rate NUMBER NOT NULL,
+PRIMARY KEY(Employee_Position_ID)
+);
+
+CREATE TABLE Beverage (
+Bvg_ID VARCHAR(4) NOT NULL,
+Bvg_Name VARCHAR(50) NOT NULL,
+Selling_Price NUMBER NOT NULL,
+Bvg_Type VARCHAR(20) NOT NULL,
+PRIMARY KEY(Bvg_ID)
+);
+
+CREATE TABLE Supplier (
+Supplier_ID VARCHAR(4) NOT NULL,
+Supplier_Name VARCHAR(50) NOT NULL,
+Supplier_Contact INTEGER NOT NULL,
+Supplier_Email VARCHAR(30) NOT NULL,
+Supplier_Address VARCHAR(320) NOT NULL,
+PRIMARY KEY(Supplier_ID)
+);
+
+CREATE TABLE Employee (
+Employee_ID VARCHAR(4) NOT NULL,
+Employee_Name VARCHAR(50) NOT NULL,
+Employee_NRIC VARCHAR(20) NOT NULL,
+Employee_BankDetails VARCHAR(20) NOT NULL,
+Employee_Contact VARCHAR(15) NOT NULL,
+Employee_Gender CHAR(6) NOT NULL,
+Employee_Hire_Date DATE NOT NULL,
+Employee_Position_ID VARCHAR(4) NOT NULL,
+Employee_Working_Hours INTEGER NOT NULL,
+PRIMARY KEY(Employee_ID)
+);
+
+CREATE TABLE Employee_Attendance (
+Attendance_ID VARCHAR(4) NOT NULL,
+Attendance_Date DATE NOT NULL,
+Employee_ID VARCHAR(4) NOT NULL,
+Clock_In_Time TIMESTAMP NOT NULL,
+Clock_Out_Time TIMESTAMP NOT NULL,
+Attendance_Status VARCHAR(10) NOT NULL,
+PRIMARY KEY(Attendance_ID),
+CONSTRAINT FK_Employee_Attendance FOREIGN KEY (Employee_ID)
+REFERENCES Employee(Employee_ID)
+);
+
+CREATE TABLE Shift_Schedule (
+Shift_ID VARCHAR(4) NOT NULL,
+Employee_ID VARCHAR(4) NOT NULL,
+Shift_Date DATE NOT NULL,
+Shift_Start_Time TIMESTAMP NOT NULL,
+Shift_End_Time TIMESTAMP NOT NULL,
+Shift_Type VARCHAR(50) NOT NULL,
+PRIMARY KEY(Shift_ID),
+CONSTRAINT FK_Shift_Schedule FOREIGN KEY(Employee_ID)
+REFERENCES Employee(Employee_ID)
+);
+
+CREATE TABLE Orders (
+Order_ID INTEGER NOT NULL,
+Employee_ID VARCHAR(4) NOT NULL,
+Customer_ID INTEGER,
+Order_Date_Time TIMESTAMP NOT NULL,
+Delivery_ID VARCHAR(10),
+Payment_Method_Name VARCHAR(20) NOT NULL,
+Payment_Amount NUMBER NOT NULL,
+PRIMARY KEY(Order_ID),
+CONSTRAINT FK_Order_Employee_ID FOREIGN KEY(Employee_ID) REFERENCES Employee(Employee_ID),
+CONSTRAINT FK_Order_Customer_ID FOREIGN KEY(Customer_ID) REFERENCES Customer(Customer_ID)
+);
+
+CREATE TABLE Ingredient (
+Ingredient_ID VARCHAR(5) NOT NULL,
+Ingredient_Name VARCHAR(50) NOT NULL,
+Supplier_ID VARCHAR(4) NOT NULL,
+Unit_Cost NUMBER NOT NULL,
+Ingredient_Category VARCHAR(50) NOT NULL,
+PRIMARY KEY(Ingredient_ID),
+CONSTRAINT FK_Ingredient FOREIGN KEY(Supplier_ID) REFERENCES Supplier(Supplier_ID)
+);
+
+CREATE TABLE Inventory (
+Inventory_ID VARCHAR(5) NOT NULL,
+Ingredient_ID VARCHAR(5) NOT NULL,
+Date_Created DATE NOT NULL,
+Expiration_Date DATE NOT NULL,
+Ingredient_Quantity INTEGER NOT NULL CHECK (Ingredient_Quantity > 0),
+PRIMARY KEY(Inventory_ID),
+CONSTRAINT FK_Inventory FOREIGN KEY(Ingredient_ID)
+REFERENCES Ingredient(Ingredient_ID)
+);
+
+CREATE TABLE Made (
+Ingredient_ID VARCHAR(5) NOT NULL,
+Bvg_ID VARCHAR(4) NOT NULL,
+PRIMARY KEY(Ingredient_ID, Bvg_ID),
+CONSTRAINT FK_Made_Ingredient_ID FOREIGN KEY(Ingredient_ID) REFERENCES Ingredient(Ingredient_ID),
+CONSTRAINT FK_Made_Bvg_ID FOREIGN KEY(Bvg_ID) REFERENCES Beverage(Bvg_ID)
+);
+
+CREATE TABLE Includes(
+Order_ID INTEGER NOT NULL,
+Bvg_ID VARCHAR(4) NOT NULL,
+Bvg_Quantity INTEGER NOT NULL CHECK (Bvg_Quantity > 0),
+PRIMARY KEY(Order_ID, Bvg_ID),
+CONSTRAINT FK_Include_Order_ID FOREIGN KEY(Order_ID) REFERENCES Orders(Order_ID),
+CONSTRAINT FK_Include_Bvg_ID FOREIGN KEY(Bvg_ID) REFERENCES Beverage(Bvg_ID)
+);
